@@ -61,10 +61,10 @@ export default async function HomePage() {
             <div className="hidden md:flex items-center justify-center">
               <div className="relative w-80 h-80">
                 {[
-                  { label: 'Artesanal', sub: '100%', top: '0', left: '50%', translate: '-translate-x-1/2', color: 'bg-rose' },
-                  { label: 'Entrega', sub: 'Rápida', top: '50%', left: '0', translate: '-translate-y-1/2', color: 'bg-gold' },
-                  { label: 'Encomendas', sub: 'Sob medida', top: '50%', right: '0', translate: '-translate-y-1/2', color: 'bg-sage' },
-                  { label: 'Ingredientes', sub: 'Frescos', bottom: '0', left: '50%', translate: '-translate-x-1/2', color: 'bg-espresso-medium' },
+                  { label: 'Artesanal', sub: '100%', top: '0', left: '50%', translate: '-translate-x(-50%)', color: 'bg-rose' },
+                  { label: 'Entrega', sub: 'Rápida', top: '50%', left: '0', translate: '-translate-y(-50%)', color: 'bg-gold' },
+                  { label: 'Encomendas', sub: 'Sob medida', top: '50%', right: '0', translate: '-translate-y(-50%)', color: 'bg-sage' },
+                  { label: 'Ingredientes', sub: 'Frescos', bottom: '0', left: '50%', translate: '-translate-x(-50)', color: 'bg-espresso-medium' },
                 ].map(({ label, sub, color, ...pos }) => (
                   <div key={label} className={`absolute ${color} rounded-2xl px-4 py-3 text-center shadow-lg`}
                     style={{ top: pos.top, left: pos.left, right: (pos as {right?: string}).right, bottom: pos.bottom, transform: pos.translate }}>

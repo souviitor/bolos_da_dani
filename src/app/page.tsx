@@ -22,7 +22,9 @@ async function getProducts(): Promise<Product[]> {
 export default async function HomePage() {
   const products = await getProducts();
 
-  const categories = [...new Set(products.map(p => p.category))];
+  const categories = Array.from(
+    new Set(products.map((p) => p.category))
+  );
 
   return (
     <>

@@ -1,4 +1,7 @@
 // src/app/page.tsx
+
+export const dynamic = 'force-dynamic';
+
 import { prisma } from '@/lib/prisma';
 import Navbar from '@/components/ui/Navbar';
 import Footer from '@/components/ui/Footer';

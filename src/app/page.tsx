@@ -9,7 +9,7 @@ import { Product, CATEGORY_LABELS } from '@/types';
 import { Cake, Star, Truck, Clock } from 'lucide-react';
 import Link from 'next/link';
 
-export const revalidate = 30;
+export const dynamic = 'force-dynamic';
 
 async function getProducts(): Promise<Product[]> {
   try {

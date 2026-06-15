@@ -1,6 +1,5 @@
 // src/app/page.tsx
 
-export const dynamic = 'force-dynamic';
 
 import { prisma } from '@/lib/prisma';
 import Navbar from '@/components/ui/Navbar';
@@ -9,6 +8,8 @@ import ProductCard from '@/components/products/ProductCard';
 import { Product, CATEGORY_LABELS } from '@/types';
 import { Cake, Star, Truck, Clock } from 'lucide-react';
 import Link from 'next/link';
+
+export const dynamic = 'force-dynamic';
 
 async function getProducts(): Promise<Product[]> {
   try {

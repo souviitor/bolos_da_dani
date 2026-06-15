@@ -1,64 +1,47 @@
+// src/app/api/upload/route.ts
 import { NextRequest, NextResponse } from 'next/server';
+import { put } from '@vercel/blob';
 import { v4 as uuidv4 } from 'uuid';
-import fs from 'fs/promises';
-import path from 'path';
 
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
-    const file = formData.get('file') as File | null;
+    const file     = formData.get('file') as File | null;
 
     if (!file) {
-      return NextResponse.json(
-        { error: 'Nenhum arquivo enviado' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
-    const allowedTypes = [
-      'image/jpeg',
-      'image/png',
-      'image/webp',
-      'image/jpg',
-    ];
-
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
     if (!allowedTypes.includes(file.type)) {
-      return NextResponse.json(
-        { error: 'Formato inválido' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Invalid file type' }, { status: 400 });
     }
 
+    // Validate file size (5MB)
     if (file.size > 5 * 1024 * 1024) {
-      return NextResponse.json(
-        { error: 'Arquivo maior que 5MB' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'File too large (max 5MB)' }, { status: 400 });
     }
 
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+    const ext      = file.name.split('.').pop() ?? 'jpg';
+    const filename = `receipts/${uuidv4()}.${ext}`;
 
-    const ext = file.name.split('.').pop() || 'jpg';
-    const fileName = `${uuidv4()}.${ext}`;
+    // Try Vercel Blob first; fall back to base64 data URL for dev
+    if (process.env.BLOB_READ_WRITE_TOKEN) {
+      const blob = await put(filename, file, { access: 'public' });
+      return NextResponse.json({ url: blob.url });
+    }
 
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+    // Development fallback: return a placeholder URL
+    const arrayBuffer = await file.arrayBuffer();
+    const base64      = Buffer.from(arrayBuffer).toString('base64');
+    const dataUrl     = `data:${file.type};base64,${base64}`;
 
-    await fs.mkdir(uploadDir, { recursive: true });
-
-    const filePath = path.join(uploadDir, fileName);
-
-    await fs.writeFile(filePath, buffer);
-
-    return NextResponse.json({
-      url: `/uploads/${fileName}`,
-    });
+    // In production this should be a proper URL; for dev, store inline
+    console.warn('BLOB_READ_WRITE_TOKEN not set — using base64 fallback');
+    return NextResponse.json({ url: dataUrl });
   } catch (error) {
-    console.error(error);
-
-    return NextResponse.json(
-      { error: 'Erro ao fazer upload' },
-      { status: 500 }
-    );
+    console.error('Upload error:', error);
+    return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
   }
 }

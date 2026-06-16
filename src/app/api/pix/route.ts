@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import QRCode from 'qrcode';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 export async function GET(req: NextRequest) {
   try {

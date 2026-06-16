@@ -17,6 +17,7 @@ export async function POST(req: NextRequest) {
     if (!allowedTypes.includes(file.type)) {
       return NextResponse.json({ error: 'Invalid file type' }, { status: 400 });
     }
+    
 
     // Validate file size (5MB)
     if (file.size > 5 * 1024 * 1024) {
